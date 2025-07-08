@@ -3,48 +3,29 @@
 #include <vector>
 using namespace std;
 
-void QuickSort(vector<int>& vec,int min,int max)
+void ShellSort(vector<int>& vec,int n)
 {
-    if (min>=max) return ;
-    
-    int pivot=vec[min];
-    int i=min;
-    int j=max;
-    bool bIsRight=true;
-    
-    while (i<j)
-    {
-        if (bIsRight)
-        {
-            if (vec[j]<pivot)
-            {
-                vec[i++]=vec[j];
-                bIsRight=false;
-                continue;
-            }
-            j--;
-        }
-        else
-        {
-            if (vec[i]>pivot)
-            {
-                vec[j--]=vec[i];
-                bIsRight=true;
-                continue;
-            }
-            i++;
-        }
-    }
-    vec[i]=pivot;
+    int gap = n;
 
-    for (int i=0;i<vec.size();i++)
+    while (gap>1)
     {
-        cout<<vec[i]<<" ";
+        gap = gap/2;
+
+        for (int i=gap;i<n;i++)
+        {
+            if (vec[i] < vec[i - gap])
+            {
+                int tmp = vec[i];
+                int j;
+                for (j = i - gap; j >= 0 && vec[j] > tmp; j-=gap)//这里是j-=gap
+                {
+                    vec[j + gap] = vec[j];
+                }
+                vec[j + gap] = tmp;
+            }
+        }
     }
-    cout<<endl;
     
-    QuickSort(vec,min,i-1);
-    QuickSort(vec,i+1,max);
 }
 
 /*
@@ -58,7 +39,7 @@ int main()
 {
     vector<int> vec = {9,8,7,6,5,4,3,2,1};
 
-    QuickSort(vec,0,vec.size()-1);
+    ShellSort(vec,vec.size());
     
     for (int i=0;i<vec.size();i++)
     {
