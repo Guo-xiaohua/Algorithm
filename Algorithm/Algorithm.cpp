@@ -8,17 +8,17 @@ int main()
     vector<int> vec = {9,8,7,6,5,4,3,2,1};
 
 
-    for (int i=0;i<vec.size()-1;i++)
+    for (int i=0;i<vec.size();i++)
     {
-        for (int j=i+1;j>0;j--)
+        int min = i;
+        for (int j=i+1;j<vec.size();j++)
         {
-            if (vec[j-1]>vec[j])
-            {
-                int temp = vec[j-1];
-                vec[j-1] = vec[j];
-                vec[j] = temp;
-            }
+            if (vec[j] < vec[min])
+                min = j;
         }
+        int temp = vec[i];
+        vec[i] = vec[min];
+        vec[min] = temp;
     }
     
     for (int i=0;i<vec.size();i++)
