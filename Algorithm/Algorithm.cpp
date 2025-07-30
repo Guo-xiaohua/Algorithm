@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <stack>
 #include <vector>
+#include <queue>
 
 struct Position
 {
@@ -39,23 +40,22 @@ int main()
     }
 
     std::vector<std::vector<bool>> visited(n+1,std::vector<bool>(m+1,false));
-    std::stack<Position> Stack;
-    Stack.push(Position(Xs,Ys,0));
+    //std::stack<Position> Stack;
+    std::queue<Position> Queue;
+    Queue.push(Position(Xs,Ys,0));
     int MinSize = INT_MAX;
 
     int NewX[4]{1,-1,0,0};
     int NewY[4]{0,0,-1,1};
     
-    while (!Stack.empty())
+    while (!Queue.empty())
     {
-        Position p = Stack.top();
-        Stack.pop();
+        Position p = Queue.front();
+        MinSize = p.Size;
+        Queue.pop();
 
         if (p.x == Xe && p.y == Ye)
-        {
-            MinSize = std::min(MinSize,p.Size);
             break;
-        }
         
         // 检查4个方向能不能走
         for (int i=0;i<4;i++)
@@ -69,7 +69,7 @@ int main()
 
             if (arr[nx][ny] != '*' && arr[nx][ny] != ' ' && !visited[nx][ny])
             {
-                Stack.push(Position(nx,ny,p.Size+1));
+                Queue.push(Position(nx,ny,p.Size+1));
                 visited[nx][ny] = true;
             }
         }
