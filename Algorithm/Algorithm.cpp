@@ -1,83 +1,63 @@
 ﻿#include <iostream>
-#include <stack>
 #include <vector>
-#include <queue>
 
-struct Position
-{
-    int x,y;
-    int Size;
-    
-    Position(int a=0,int b=0,int size=0):x(a),y(b),Size(size){}
-};
+/*
+ * 对差分数组arr2,有arr2[i][j] = arr[i][j] - arr[i-1][j] - arr[i][j-1] + arr[i-1][j-1]
+ * 对差分数组做二维的前缀和可得到原始数组
+ */
 
-int main() 
+
+void insert(int x1,int y1,int x2,int y2,int q,std::vector<std::vector<long long>>& arr)
 {
-    int n,m;
-    std::cin>>n>>m;
-    // 输入起点与终点坐标
-    int Xs,Ys,Xe,Ye;
-    std::cin>>Xs>>Ys>>Xe>>Ye;
+    arr[x1][y1] += q;
+    arr[x1][y2+1] -= q;
+    arr[x2+1][y1] -= q;
+    arr[x2+1][y2+1] += q;
+}
+
+int main()
+{
+    int n,m,q;
+    std::cin>>n>>m>>q;
+    // 原始数组
+    std::vector<std::vector<long long>> arr(n+1,std::vector<long long>(m+1,0));
+    // 二维差分数组
+    std::vector<std::vector<long long>> arr2(n+1,std::vector<long long>(m+1,0));
     
-    std::vector<std::vector<char>> arr(n+1,std::vector<char>(m+1,' '));
-    for(int i=1;i<=n;i++)
+    for (int i=0;i<n;i++)
     {
-        for(int j=1;j<=m;j++)
+        for (int j=0;j<m;j++)
         {
             std::cin>>arr[i][j];
+            insert(i,j,i,j,arr[i][j],arr2);
         }
     }
 
-    if (arr[Xe][Ye] == '*')
+    while (q--)
     {
-        std::cout<<"-1"<<std::endl;
-        return 0;
-    }
-    if (Xs == Xe && Ys == Ye)
-    {
-        std::cout<<"0"<<std::endl;
-        return 0;
+        int x1,y1,x2,y2,k;
+        std::cin>>x1>>y1>>x2>>y2>>k;
+        insert(x1-1,y1-1,x2-1,y2-1,k,arr2);
     }
 
-    std::vector<std::vector<bool>> visited(n+1,std::vector<bool>(m+1,false));
-    //std::stack<Position> Stack;
-    std::queue<Position> Queue;
-    Queue.push(Position(Xs,Ys,0));
-    int MinSize = INT_MAX;
-
-    int NewX[4]{1,-1,0,0};
-    int NewY[4]{0,0,-1,1};
-    
-    while (!Queue.empty())
+    // 对差分数组做前缀和得到最终数组
+    for (int i=0;i<n;i++)
     {
-        Position p = Queue.front();
-        MinSize = p.Size;
-        Queue.pop();
-
-        if (p.x == Xe && p.y == Ye)
-            break;
-        
-        // 检查4个方向能不能走
-        for (int i=0;i<4;i++)
+        for (int j=0;j<m;j++)
         {
-            int nx = p.x + NewX[i];
-            int ny = p.y + NewY[i];
+            if (i-1<0 && j-1<0)
+                arr[i][j] = arr2[i][j];
+            else if (i-1<0 && j-1>=0)
+                arr[i][j] = arr2[i][j] + arr[i][j-1];
+            else if (j-1<0 && i-1>=0)
+                arr[i][j] = arr2[i][j] + arr[i-1][j];
+            else if (i-1>=0 && j-1>=0)
+                arr[i][j] = arr2[i][j] + arr[i-1][j] + arr[i][j-1] - arr[i-1][j-1];
 
-            // 边界检查
-            if (nx<1 || nx>n || ny<1 || ny>m)
-                continue;
-
-            if (arr[nx][ny] != '*' && arr[nx][ny] != ' ' && !visited[nx][ny])
-            {
-                Queue.push(Position(nx,ny,p.Size+1));
-                visited[nx][ny] = true;
-            }
+            std::cout<<arr[i][j]<<" ";
         }
+        std::cout<<std::endl;
     }
-    if (MinSize!=INT_MAX)
-        std::cout<<MinSize<<std::endl;
-    else
-        std::cout<<"-1"<<std::endl;
-
+    
     return 0;
 }
