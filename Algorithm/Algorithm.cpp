@@ -1,33 +1,39 @@
 ﻿#include <iostream>
 #include <vector>
 
-/*
- * 连续子数组
- * 给定一个长度为 n 的数组，数组中的数为整数。
- * 请你选择一个非空连续子数组，使该子数组所有数之和尽可能大。求这个最大值。
- *
- * 从二开始,对当前的节点可以选择拿下或者从头开始(不能选择跳过,不满足连续的要求)
- * 拿与从头开始只看哪种收益最高
- */
-
 int main()
 {
     int n;
     std::cin >> n;
 
-    std::vector<int> v(n);
-    int maxSum = 0;
-    int curentSum = 0;
+    // 数据输入
+    std::vector<int> cost(n);
+    for (int i = 0; i < n; i++)
+        std::cin >> cost[i];
 
-    std::cin >> curentSum;
-    maxSum += curentSum;
-    for (int i = 1; i < n; i++)
+    // 记录买卖状态的数组
+    std::vector<std::vector<int>> arr(n, std::vector<int>(2, 0));
+    /*
+     * arr[i][0] 表示第i天不持有股票的金额
+     *      1. 手头的股票已经卖掉了   arr[i][0] = arr[i-1][0];
+     *      2. 今天将手头的股票卖掉   arr[i][0] = arr[i-1][1] + cost[i];
+     *      arr[i][0] = max(arr[i-1][0],arr[i-1][1] + cost[i]);
+     * arr[i][1] 表示第i天持有股票的金额
+     *      1. 手头已经有股票        arr[i][1] = arr[i-1][1];
+     *      2. 今天买入股票          arr[i][1] = 0-cost[i];
+     *      arr[i][1] = max(arr[i-1][1],- cost[i]);
+     */
+
+    arr[0][0] = 0;
+    arr[0][1] = 0-cost[0];
+
+    for (int i=1;i<n;i++)
     {
-        int cin;
-        std::cin >> cin;
-        curentSum = std::max(cin,curentSum+cin);
-        maxSum = std::max(maxSum,curentSum);
+        arr[i][0] = std::max(arr[i-1][0],arr[i-1][1] + cost[i]);
+        arr[i][1] = std::max(arr[i-1][1],0 - cost[i]);
     }
-    std::cout << maxSum;
+
+    std::cout<<std::max(arr[n-1][0],arr[n-1][1])<<std::endl;
+    
     return 0;
 }
