@@ -1,20 +1,13 @@
 ﻿#include <iostream>
+#include <vector>
 
 /*
-一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个 n 级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
-
-数据范围：
-1≤n≤40
-要求：
-时间复杂度： O(n) ，
-空间复杂度： O(1)
- */
-
-/*
- * 从1开始,一级台阶只有1中解法
- * 二级台阶只有两种解法
- * 对于三级台阶,要么是从一级台阶上来,要么从二级台阶上来   共有 一级+二级 种解法
- * 以此类推,对于n级台阶,共有  f(n) = f(n-1) + f(n-2) 种解法
+ * 连续子数组
+ * 给定一个长度为 n 的数组，数组中的数为整数。
+ * 请你选择一个非空连续子数组，使该子数组所有数之和尽可能大。求这个最大值。
+ *
+ * 从二开始,对当前的节点可以选择拿下或者从头开始(不能选择跳过,不满足连续的要求)
+ * 拿与从头开始只看哪种收益最高
  */
 
 int main()
@@ -22,21 +15,19 @@ int main()
     int n;
     std::cin >> n;
 
-    if (n<3)
-    {
-        std::cout << n;
-        return 0;
-    }
-    int i=2;
-    int fn1 = 1;
-    int fn2 = 2;
-    while (++i <= n)
-    {
-        int f = fn1 + fn2;
-        fn1 = fn2;
-        fn2 = f;
-    }
+    std::vector<int> v(n);
+    int maxSum = 0;
+    int curentSum = 0;
 
-    std::cout<<fn2<<std::endl;
+    std::cin >> curentSum;
+    maxSum += curentSum;
+    for (int i = 1; i < n; i++)
+    {
+        int cin;
+        std::cin >> cin;
+        curentSum = std::max(cin,curentSum+cin);
+        maxSum = std::max(maxSum,curentSum);
+    }
+    std::cout << maxSum;
     return 0;
 }
