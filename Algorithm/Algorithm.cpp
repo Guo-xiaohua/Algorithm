@@ -20,7 +20,7 @@ int main()
      *      arr[i][0] = max(arr[i-1][0],arr[i-1][1] + cost[i]);
      * arr[i][1] 表示第i天持有股票的金额
      *      1. 手头已经有股票        arr[i][1] = arr[i-1][1];
-     *      2. 今天买入股票          arr[i][1] = 0-cost[i];
+     *      2. 今天买入股票          arr[i][1] = arr[i-1][0] - cost[i];
      *      arr[i][1] = max(arr[i-1][1],- cost[i]);
      */
 
@@ -30,7 +30,7 @@ int main()
     for (int i=1;i<n;i++)
     {
         arr[i][0] = std::max(arr[i-1][0],arr[i-1][1] + cost[i]);
-        arr[i][1] = std::max(arr[i-1][1],0 - cost[i]);
+        arr[i][1] = std::max(arr[i-1][1],arr[i-1][0] - cost[i]);
     }
 
     std::cout<<std::max(arr[n-1][0],arr[n-1][1])<<std::endl;
