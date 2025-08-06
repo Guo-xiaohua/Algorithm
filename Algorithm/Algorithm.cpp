@@ -1,39 +1,45 @@
 ﻿#include <iostream>
-#include <vector>
+#include <bitset>
+#include <sstream>
+#include <string>
 
 int main()
 {
-    int n;
-    std::cin >> n;
-
-    // 数据输入
-    std::vector<int> cost(n);
-    for (int i = 0; i < n; i++)
-        std::cin >> cost[i];
-
-    // 记录买卖状态的数组
-    std::vector<std::vector<int>> arr(n, std::vector<int>(2, 0));
     /*
-     * arr[i][0] 表示第i天不持有股票的金额
-     *      1. 手头的股票已经卖掉了   arr[i][0] = arr[i-1][0];
-     *      2. 今天将手头的股票卖掉   arr[i][0] = arr[i-1][1] + cost[i];
-     *      arr[i][0] = max(arr[i-1][0],arr[i-1][1] + cost[i]);
-     * arr[i][1] 表示第i天持有股票的金额
-     *      1. 手头已经有股票        arr[i][1] = arr[i-1][1];
-     *      2. 今天买入股票          arr[i][1] = arr[i-1][0] - cost[i];
-     *      arr[i][1] = max(arr[i-1][1],- cost[i]);
+     * 十进制转二,八,十六进制 
      */
+    int a = 10;
+    std::stringstream s;
+    s<<std::bitset<8>(a);
+    
+    std::string d;
+    s>>d;
+    std::string o;
+    s.clear();
+    s<<std::oct<<a;
+    s>>o;
+    std::string h;
+    s.clear();
+    s<<std::hex<<a;
+    s>>h;
+    
+    std::cout<<"10 :" << d <<std::endl;
+    std::cout<<"8 :" << o <<std::endl;
+    std::cout<<"16 :" << h << std::endl;
 
-    arr[0][0] = 0;
-    arr[0][1] = 0-cost[0];
-
-    for (int i=1;i<n;i++)
-    {
-        arr[i][0] = std::max(arr[i-1][0],arr[i-1][1] + cost[i]);
-        arr[i][1] = std::max(arr[i-1][1],arr[i-1][0] - cost[i]);
-    }
-
-    std::cout<<std::max(arr[n-1][0],arr[n-1][1])<<std::endl;
+    /*
+     * 二,八,十六进制转十进制
+     */
+    
+    std::string bin = "1111011";       // 123
+    std::string oct = "173";           // 123
+    std::string hex = "7B";            // 123
+    
+    std::cout<<"--------------------------------------"<<std::endl;
+    
+    std::cout<< "2 :"<<std::stoi(bin,nullptr,2)<<std::endl;
+    std::cout<< "8 :"<<std::stoi(oct,nullptr,8)<<std::endl;
+    std::cout<< "16 :"<<std::stoi(hex,nullptr,16)<<std::endl;
     
     return 0;
 }
